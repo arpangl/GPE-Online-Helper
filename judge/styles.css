@@ -162,18 +162,13 @@ body {
 }
 
 .problem-item {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 72px 1fr auto;
+  display: flex;
   align-items: center;
   gap: 8px;
-  text-align: left;
   border: 1px solid #e0e8df;
   border-radius: 10px;
   background: #fff;
-  color: var(--text);
-  padding: 8px 9px;
-  cursor: pointer;
+  padding: 4px 9px 4px 8px;
   transition: 0.15s ease;
 }
 
@@ -185,6 +180,41 @@ body {
 .problem-item.active {
   border-color: var(--forest);
   background: linear-gradient(145deg, #f3faf5, #fff);
+}
+
+.problem-item.completed {
+  background: linear-gradient(145deg, #eaf6ee, #fff);
+  border-color: rgba(31, 107, 69, 0.35);
+}
+
+.problem-item.completed .name {
+  color: #6b8a76;
+  text-decoration: line-through;
+}
+
+.problem-done {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--forest, #1f6b45);
+}
+
+.problem-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  padding: 4px 0;
+  cursor: pointer;
+  font: inherit;
 }
 
 .problem-item .pid {

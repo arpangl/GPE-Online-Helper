@@ -18,7 +18,6 @@
       <div class="brand-mark">G</div>
       <div>
         <h1>GPE Helper Judge</h1>
-        <p>Pure Frontend Judge (Browser-side WASM)</p>
       </div>
     </div>
 
@@ -45,10 +44,6 @@
             <p id="selectedProblemMeta">-</p>
           </div>
           <button id="problemLink" class="problem-link-btn" type="button" disabled>查看原題</button>
-        </div>
-
-        <div class="panel-body">
-          <div id="sampleList" class="sample-list"></div>
         </div>
       </article>
 
@@ -88,11 +83,14 @@
   </main>
 
   <template id="problemItemTpl">
-    <button class="problem-item">
-      <span class="pid"></span>
-      <span class="name"></span>
-      <span class="tests"></span>
-    </button>
+    <div class="problem-item">
+      <input type="checkbox" class="problem-done" aria-label="完成" tabindex="-1">
+      <button class="problem-main" type="button">
+        <span class="pid"></span>
+        <span class="name"></span>
+        <span class="tests"></span>
+      </button>
+    </div>
   </template>
 
   <template id="sampleItemTpl">

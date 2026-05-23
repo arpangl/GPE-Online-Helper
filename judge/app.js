@@ -46,11 +46,36 @@ const state = {
   currentLanguage: null,
   editor: null,
   autosaveTimer: null,
+  completed: new Set(),
 };
 
 const testcaseCache = new Map();
 
 const STORAGE_PREFIX = "gpe-judge-draft-v2";
+const COMPLETED_STORAGE_KEY = "gpe-judge-completed-v1";
+
+function loadCompleted() {
+  try {
+    const raw = localStorage.getItem(COMPLETED_STORAGE_KEY);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveCompleted() {
+  try {
+    localStorage.setItem(COMPLETED_STORAGE_KEY, JSON.stringify([...state.completed]));
+  } catch {
+    /* ignore quota errors */
+  }
+}
+
+function toggleCompleted(pid, done) {
+  if (done) state.completed.add(pid);
+  else state.completed.delete(pid);
+  saveCompleted();
+}
 
 const els = {
   serverStatus: document.querySelector("#serverStatus"),
@@ -61,7 +86,6 @@ const els = {
   selectedProblemTitle: document.querySelector("#selectedProblemTitle"),
   selectedProblemMeta: document.querySelector("#selectedProblemMeta"),
   problemLink: document.querySelector("#problemLink"),
-  sampleList: document.querySelector("#sampleList"),
   languageSelect: document.querySelector("#languageSelect"),
   codeEditor: document.querySelector("#codeEditor"),
   runBtn: document.querySelector("#runBtn"),
@@ -209,7 +233,17 @@ function renderProblemList(items) {
     node.querySelector(".name").textContent = p.name;
     node.querySelector(".tests").textContent = `${p.testcase_count ?? 0} tests`;
     if (p.pid === state.selectedPid) node.classList.add("active");
-    node.addEventListener("click", () => selectProblem(p.pid));
+    if (state.completed.has(p.pid)) node.classList.add("completed");
+
+    const checkbox = node.querySelector(".problem-done");
+    checkbox.checked = state.completed.has(p.pid);
+    checkbox.addEventListener("click", (e) => e.stopPropagation());
+    checkbox.addEventListener("change", (e) => {
+      toggleCompleted(p.pid, e.target.checked);
+      node.classList.toggle("completed", e.target.checked);
+    });
+
+    node.querySelector(".problem-main").addEventListener("click", () => selectProblem(p.pid));
     els.problemList.appendChild(node);
   }
 }
@@ -229,7 +263,6 @@ function renderProblemHeader() {
     els.selectedProblemTitle.textContent = "請選擇題目";
     els.selectedProblemMeta.textContent = "-";
     els.problemLink.disabled = true;
-    els.sampleList.innerHTML = "";
     return;
   }
 
@@ -238,9 +271,6 @@ function renderProblemHeader() {
   els.selectedProblemTitle.textContent = `${p.pid} · ${p.name}`;
   els.selectedProblemMeta.textContent = `TL: ${p.time_limit}s · 類別: ${categories} · 測資: ${p.testcase_count}`;
   els.problemLink.disabled = !p.problem_url;
-
-  const sampleNames = Array.isArray(p.testcase_names) ? p.testcase_names.slice(0, 2) : [];
-  renderSamples(sampleNames);
 }
 
 async function fetchTestcasePair(pid, testcaseName) {
@@ -281,24 +311,6 @@ function closeSampleModal() {
   els.sampleModal.classList.remove("open");
   els.sampleModal.setAttribute("aria-hidden", "true");
   document.body.classList.remove("modal-open");
-}
-
-function renderSamples(sampleNames) {
-  els.sampleList.innerHTML = "";
-  if (!sampleNames.length) {
-    const empty = document.createElement("p");
-    empty.className = "placeholder";
-    empty.textContent = "目前沒有範例測資。";
-    els.sampleList.appendChild(empty);
-    return;
-  }
-
-  for (const testcaseName of sampleNames) {
-    const node = els.sampleItemTpl.content.firstElementChild.cloneNode(true);
-    node.querySelector(".sample-trigger-name").textContent = `範例測資 ${testcaseName}`;
-    node.addEventListener("click", () => openSampleModalByName(testcaseName));
-    els.sampleList.appendChild(node);
-  }
 }
 
 function renderResult(result) {
@@ -919,6 +931,7 @@ function openProblemLink() {
 async function boot() {
   initEditor();
   state.currentLanguage = els.languageSelect.value;
+  state.completed = loadCompleted();
   setServerStatus("載入本地題庫中...", true);
 
   try {
