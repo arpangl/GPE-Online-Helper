@@ -78,7 +78,6 @@ function toggleCompleted(pid, done) {
 }
 
 const els = {
-  serverStatus: document.querySelector("#serverStatus"),
   problemSidebar: document.querySelector("#problemSidebar"),
   toggleProblemPanelBtn: document.querySelector("#toggleProblemPanelBtn"),
   problemSearch: document.querySelector("#problemSearch"),
@@ -136,10 +135,8 @@ function setSummary(text, cls = "neutral") {
   els.summaryBadge.className = `summary ${cls}`;
 }
 
-function setServerStatus(text, ok = false) {
-  els.serverStatus.textContent = text;
-  els.serverStatus.style.borderColor = ok ? "rgba(29,127,78,0.45)" : "rgba(187,62,62,0.45)";
-  els.serverStatus.style.color = ok ? "#1d7f4e" : "#bb3e3e";
+function setServerStatus(_text, _ok = false) {
+  // status pill removed; keep as no-op so existing call sites don't error
 }
 
 function verdictClass(verdict) {
