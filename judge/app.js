@@ -61,7 +61,6 @@ const els = {
   selectedProblemTitle: document.querySelector("#selectedProblemTitle"),
   selectedProblemMeta: document.querySelector("#selectedProblemMeta"),
   problemLink: document.querySelector("#problemLink"),
-  problemDescription: document.querySelector("#problemDescription"),
   sampleList: document.querySelector("#sampleList"),
   languageSelect: document.querySelector("#languageSelect"),
   codeEditor: document.querySelector("#codeEditor"),
@@ -229,8 +228,6 @@ function renderProblemHeader() {
   if (!state.selectedProblem) {
     els.selectedProblemTitle.textContent = "請選擇題目";
     els.selectedProblemMeta.textContent = "-";
-    els.problemDescription.textContent = "請先選擇題目。";
-    els.problemDescription.hidden = false;
     els.problemLink.disabled = true;
     els.sampleList.innerHTML = "";
     return;
@@ -240,9 +237,6 @@ function renderProblemHeader() {
   const categories = Array.isArray(p.category) && p.category.length ? p.category.join(", ") : "無";
   els.selectedProblemTitle.textContent = `${p.pid} · ${p.name}`;
   els.selectedProblemMeta.textContent = `TL: ${p.time_limit}s · 類別: ${categories} · 測資: ${p.testcase_count}`;
-  const description = typeof p.description === "string" ? p.description.trim() : "";
-  els.problemDescription.textContent = description || "此題尚未提供本地敘述，請使用「查看原題」。";
-  els.problemDescription.hidden = false;
   els.problemLink.disabled = !p.problem_url;
 
   const sampleNames = Array.isArray(p.testcase_names) ? p.testcase_names.slice(0, 2) : [];

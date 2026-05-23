@@ -273,20 +273,6 @@ body {
   cursor: not-allowed;
 }
 
-.problem-description {
-  margin: 0;
-  line-height: 1.55;
-  color: #173322;
-  white-space: pre-wrap;
-  max-height: 145px;
-  overflow: auto;
-  font-size: 0.88rem;
-}
-
-.problem-description[hidden] {
-  display: none;
-}
-
 .sample-list {
   margin-top: 10px;
   display: flex;
