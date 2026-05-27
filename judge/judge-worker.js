@@ -91,7 +91,7 @@ async function compileCpp(code) {
   const result = await runtime.compile({
     source: String(code || ""),
     fileName: "main.cpp",
-    flags: ["-O2", "-std=c++14", "-fno-exceptions"],
+    flags: ["-O2", "-std=c++17", "-fno-exceptions"],
   });
   const elapsedMs = performance.now() - t0;
 

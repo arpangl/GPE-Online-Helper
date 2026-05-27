@@ -103,14 +103,14 @@ const els = {
 };
 
 const starterCode = {
-  cpp14: `#include <iostream>
+  cpp17: `#include <iostream>
 using namespace std;
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    // Write your C++14 solution here.
+    // Write your C++17 solution here.
 
     return 0;
 }
@@ -127,7 +127,7 @@ if __name__ == "__main__":
 };
 
 function editorModeByLanguage(lang) {
-  return lang === "cpp14" ? "text/x-c++src" : "python";
+  return lang === "cpp17" ? "text/x-c++src" : "python";
 }
 
 function setSummary(text, cls = "neutral") {
@@ -518,7 +518,7 @@ function createJudgeRuntime() {
   }
 
   function isLanguageReady(language) {
-    if (language === "cpp14") return cppReady;
+    if (language === "cpp17") return cppReady;
     if (language === "python39") return pythonReady;
     return false;
   }
@@ -532,7 +532,7 @@ function createJudgeRuntime() {
       return;
     }
 
-    if (language === "cpp14") {
+    if (language === "cpp17") {
       if (!cppReady) {
         await callWorker("initCpp", {}, 120_000);
         cppReady = true;
@@ -662,7 +662,7 @@ async function judgeSubmission(problem, language, code) {
     return {
       problem_id: problem.pid,
       language,
-      language_label: language === "cpp14" ? "C++14" : "Python 3.9",
+      language_label: language === "cpp17" ? "C++17" : "Python 3.9",
       overall_verdict: "SE",
       overall_label: verdictLabels.SE,
       passed: 0,
@@ -740,13 +740,13 @@ async function judgeSubmission(problem, language, code) {
         error_msg: "",
       });
     }
-  } else if (language === "cpp14") {
+  } else if (language === "cpp17") {
     const compileResult = await judgeRuntime.compileCpp(code);
     if (!compileResult.success) {
       return {
         problem_id: problem.pid,
         language,
-        language_label: "C++14",
+        language_label: "C++17",
         overall_verdict: "CE",
         overall_label: verdictLabels.CE,
         passed: 0,
@@ -864,7 +864,7 @@ async function judgeSubmission(problem, language, code) {
   return {
     problem_id: problem.pid,
     language,
-    language_label: language === "cpp14" ? "C++14" : "Python 3.9",
+    language_label: language === "cpp17" ? "C++17" : "Python 3.9",
     overall_verdict: overallVerdict,
     overall_label: verdictLabels[overallVerdict] || verdictLabels.SE,
     passed,
@@ -893,7 +893,7 @@ async function handleRun() {
 
   try {
     if (!judgeRuntime.isLanguageReady(language)) {
-      if (language === "cpp14") {
+      if (language === "cpp17") {
         showMessage("正在載入 C++ Runtime（首次可能較久，完成後會開始編譯）...");
       } else {
         showMessage("正在載入 Python Runtime（首次需要下載）...");
@@ -901,7 +901,7 @@ async function handleRun() {
     }
     await judgeRuntime.ensureLanguageReady(language);
 
-    if (language === "cpp14") {
+    if (language === "cpp17") {
       showMessage("C++ WASM 編譯與批改中，請稍候...");
     } else {
       showMessage("Python WASM 批改中，請稍候...");
