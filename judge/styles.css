@@ -612,6 +612,14 @@ body.modal-open {
   font-size: 0.86rem;
   line-height: 1.5;
   background: #f7faf7;
+  /* JetBrains Mono ligatures: >= ≥, != ≠, <=, == 等顯示為單一符號（實際文字仍為原字元） */
+  font-variant-ligatures: contextual common-ligatures;
+  font-feature-settings: "calt" 1, "liga" 1;
+}
+
+.CodeMirror span {
+  font-variant-ligatures: inherit;
+  font-feature-settings: inherit;
 }
 
 .CodeMirror-gutters {

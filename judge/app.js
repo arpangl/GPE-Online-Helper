@@ -408,6 +408,20 @@ function initEditor() {
       "Shift-Tab"(cm) {
         cm.indentSelection("subtract");
       },
+      Backspace(cm) {
+        // 在僅有縮排（游標前皆為空白）的位置按 Backspace 時改為反縮排
+        if (cm.somethingSelected()) return CodeMirror.Pass;
+        const cur = cm.getCursor();
+        const before = cm.getLine(cur.line).slice(0, cur.ch);
+        if (cur.ch === 0 || /\S/.test(before)) return CodeMirror.Pass;
+        const indentUnit = cm.getOption("indentUnit") || 4;
+        const removeCount = ((cur.ch - 1) % indentUnit) + 1;
+        cm.replaceRange(
+          "",
+          { line: cur.line, ch: cur.ch - removeCount },
+          { line: cur.line, ch: cur.ch }
+        );
+      },
       Enter(cm) {
         cm.execCommand("newlineAndIndent");
       },
