@@ -942,6 +942,9 @@ function openProblemLink() {
 function migrateCpp14Drafts() {
   // 語言識別碼從 cpp14 改成 cpp17 後，把舊草稿搬到新 key（保留舊 key 當備份）
   try {
+    // 一次性旗標：搬過一次就不再執行，避免每次載入都覆蓋掉之後新打的草稿
+    const migrationFlag = `${STORAGE_PREFIX}:migrated-cpp14-to-cpp17`;
+    if (localStorage.getItem(migrationFlag)) return;
     const oldSuffix = ":cpp14";
     const oldKeys = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -957,6 +960,7 @@ function migrateCpp14Drafts() {
       // 無條件覆蓋：直接把舊 cpp14 草稿搬到 cpp17（保留舊 key 當備份）
       localStorage.setItem(newKey, oldVal);
     }
+    localStorage.setItem(migrationFlag, new Date().toISOString());
   } catch (error) {
     // localStorage 不可用時忽略
   }
