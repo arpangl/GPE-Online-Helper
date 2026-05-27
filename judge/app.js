@@ -939,7 +939,31 @@ function openProblemLink() {
   window.open(url, "_blank", "noopener");
 }
 
+function migrateCpp14Drafts() {
+  // 語言識別碼從 cpp14 改成 cpp17 後，把舊草稿搬到新 key（保留舊 key 當備份）
+  try {
+    const oldSuffix = ":cpp14";
+    const oldKeys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith(`${STORAGE_PREFIX}:`) && key.endsWith(oldSuffix)) {
+        oldKeys.push(key);
+      }
+    }
+    for (const oldKey of oldKeys) {
+      const newKey = `${oldKey.slice(0, -oldSuffix.length)}:cpp17`;
+      const oldVal = localStorage.getItem(oldKey);
+      if (oldVal === null) continue;
+      // 無條件覆蓋：直接把舊 cpp14 草稿搬到 cpp17（保留舊 key 當備份）
+      localStorage.setItem(newKey, oldVal);
+    }
+  } catch (error) {
+    // localStorage 不可用時忽略
+  }
+}
+
 async function boot() {
+  migrateCpp14Drafts();
   initEditor();
   state.currentLanguage = els.languageSelect.value;
   state.completed = loadCompleted();
